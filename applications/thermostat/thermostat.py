@@ -58,7 +58,7 @@ class Thermostat:
     def get_data(self, bot, update):
         text = self.__get_data_from_box()
         formatting_text = f"Термостат: {'On' if int(text[0]) else 'Off'}\n" \
-            f"Став в даний момент: {text[1]}\n" \
+            f"Стан в даний момент: {('<b>Нагрівання</b>' if text[1] == '1' else '<b>Охолодження</b>') if text[1] != '0' else '<b>Вимкнено</b>'}\n" \
             f"Температура: {text[2]}\n" \
             f"Встановлена температура.: {text[3]}\n" \
             f"Освітленість: {'On' if int(text[6]) else 'Off'}\n"
