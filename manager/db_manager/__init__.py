@@ -35,6 +35,8 @@ class BotSession(Base):
     start_session = Column(Integer)
     current_directory = Column(String)
 
+    current_menu = Column(String, default="")
+
     def __repr__(self):
        return f"<Session {self.session_id} | user: {self.user_id} | " \
               f"start time: {datetime.fromtimestamp(self.start_session)}>"

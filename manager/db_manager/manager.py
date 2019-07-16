@@ -56,3 +56,13 @@ def update_bot_session(id: int, path: str = "~/"):
     session.current_directory = path
     db.commit()
     return session
+
+def update_current_menu(id:int, menu: str = ""):
+    session = get_last_session(id)
+    session.current_menu = menu
+    db.commit()
+    return session
+
+def get_current_menu(id:int):
+    session = get_last_session(id)
+    return session.current_menu

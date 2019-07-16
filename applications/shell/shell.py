@@ -10,7 +10,7 @@ class Shell:
         self.shell = ShellManager()
         self.custom_keyboard = [
             [commands.CURRENT_DIR, commands.SHOW_FILES],
-            [commands.BACK_TO_HOME]
+            ["Thermostat menu"]
         ]
 
     @protect_it

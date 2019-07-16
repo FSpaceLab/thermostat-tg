@@ -1,11 +1,7 @@
 import socket
 import re
+from .settings import *
 
-pattern = r"([\d.]+)"
-SOCK_HOST = 'localhost'
-SOCK_PORT = 10000
-
-GET_DATA = "get_data"
 
 
 class ThermostatBox:

@@ -6,7 +6,7 @@ class Home:
     def __init__(self):
         self.os = OS()
         self.custom_keyboard = [['NGINX', 'SHELL'],
-                                ["Thermostat"],
+                                ["Thermostat menu"],
                                 ['About OS']]
 
     def home_menu(self, bot, update):
