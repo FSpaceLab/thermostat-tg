@@ -71,11 +71,12 @@ class Thermostat:
     @protect_it
     def get_data(self, bot, update):
         text = self.__get_data_from_box()
+        light_mode = self.__get_light_mode()
         formatting_text = f"Термостат: {'On' if int(text[TS_STATE]) else 'Off'}\n" \
             f"Стан в даний момент: {('<b>Нагрівання</b>' if text[CURRENT_STATE] == '1' else '<b>Охолодження</b>') if text[CURRENT_STATE] != '0' else '<b>Вимкнено</b>'}\n" \
             f"Температура: {text[CURRENT_TEMP]}\n" \
             f"Встановлена температура.: {text[SET_TEMP]}\n" \
-            f"Освітленість: {self.__get_light_mode()}"
+            f"Освітленість: {light_mode}"
 
         bot.send_message(chat_id=update.message.chat_id,
                          text=formatting_text, parse_mode="HTML")
@@ -175,7 +176,8 @@ class Thermostat:
     @protect_it
     def get_light_data(self, bot, update):
         text = self.__get_data_from_box()
-        formatted_text = f"Стан освітленості: {self.get_light_data(text)}" \
+        light_data = self.__get_light_data(text)
+        formatted_text = f"Стан освітленості: {light_data}" \
                          f"\n<b>UV:</b> {text[UV]}\n<b>R:</b> {text[R]}\n" \
                          f"<b>G:</b> {text[G]}\n<b>B:</b> {text[B]}"
 
