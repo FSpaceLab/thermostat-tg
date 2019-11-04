@@ -16,8 +16,8 @@ dispatches = [
 
     RegexHandler(SET_LIGHT_MENU, ts.set_light_menu),
     RegexHandler(ON_UV, ts.on_uv),
-    RegexHandler(ON_RGB, ts.on_rgb),
     RegexHandler(ON_RGB_UV, ts.on_rgb_uv),
+    RegexHandler(ON_RGB, ts.on_rgb),
     RegexHandler(GET_LIGHT_DATA, ts.get_light_data),
     RegexHandler(OFF_LIGHT, ts.off_light),
     RegexHandler(SET_LIGHT_UV_MENU, ts.set_uv_intensity),
