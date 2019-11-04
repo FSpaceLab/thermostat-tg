@@ -20,8 +20,8 @@ class Thermostat:
         ]
 
         self.set_light_data_menu = [
-            [ON_UV, ON_RGB, OFF_LIGHT],
-            [GET_LIGHT_DATA],
+            [ON_UV, ON_RGB, ON_RGB_UV],
+            [OFF_LIGHT, GET_LIGHT_DATA],
             [SET_LIGHT_UV_MENU, SET_LIGHT_R_MENU],
             [SET_LIGHT_G_MENU, SET_LIGHT_B_MENU],
             [TS_MENU],
@@ -40,6 +40,7 @@ class Thermostat:
     def __send_data_to_box(self, data):
         ts = ThermostatBox()
         ts.send_data_to_box(data)
+        del ts
 
     def __data_for_box(self, data_from_box):
         return [data_from_box[TS_STATE], data_from_box[SET_TEMP], data_from_box[CO2_STATE],
@@ -136,6 +137,17 @@ class Thermostat:
                          parse_mode="HTML")
 
     @protect_it
+    def on_rgb_uv(self, bot, update):
+        data_from_box = self.__get_data_from_box()
+        data_from_box[LIGHT_STATE] = "3"
+        text_for_box = f"{SEND_DATA}\n" + ";".join(self.__data_for_box(data_from_box))
+
+        self.__send_data_to_box(text_for_box)
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="Увімкнено RGB & UV-освітлення",
+                         parse_mode="HTML")
+
+    @protect_it
     def off_light(self, bot, update):
         data_from_box = self.__get_data_from_box()
         data_from_box[LIGHT_STATE] = "0"
@@ -151,7 +163,7 @@ class Thermostat:
     def get_light_data(self, bot, update):
         text = self.__get_data_from_box()
 
-        light_state = f"{('<b>УФ</b>' if text[LIGHT_STATE] == '1' else '<b>RGB</b>' ) if text[LIGHT_STATE] != '0' else '<b>Вимкнено</b>'} "
+        light_state = f"{('<b>УФ</b>' if text[LIGHT_STATE] == '1' else ('<b>RGB</b>' if text[LIGHT_STATE] == '2' else '<b>RGB & UV</b>')) if text[LIGHT_STATE] != '0' else '<b>Вимкнено</b>'} "
         formatted_text = f"Стан освітленості: {light_state}" \
                          f"\n<b>UV:</b> {text[UV]}\n<b>R:</b> {text[R]}\n" \
                          f"<b>G:</b> {text[G]}\n<b>B:</b> {text[B]}"
