@@ -31,21 +31,34 @@ class Thermostat:
             [SET_LIGHT_MENU],
         ]
 
-    def __get_data_from_box(self):
+    @staticmethod
+    def __get_data_from_box():
         ts = ThermostatBox()
         time.sleep(TIME_SLEEP)
         text = ts.get_data_from_box()
         return text
 
-    def __send_data_to_box(self, data):
+    @staticmethod
+    def __send_data_to_box(data):
         ts = ThermostatBox()
         ts.send_data_to_box(data)
         del ts
 
-    def __data_for_box(self, data_from_box):
+    @staticmethod
+    def __data_for_box(data_from_box):
         return [data_from_box[TS_STATE], data_from_box[SET_TEMP], data_from_box[CO2_STATE],
                 data_from_box[CO2_SETTED], data_from_box[LIGHT_STATE], data_from_box[UV],
                 data_from_box[R], data_from_box[G], data_from_box[B]]
+
+    @staticmethod
+    def __get_light_mode(text):
+        if text[LIGHT_STATE] == '1':
+            return '<b>УФ</b>'
+        elif text[LIGHT_STATE] == '2':
+            return '<b>RGB</b>'
+        elif text[LIGHT_STATE] == '3':
+            return '<b>RGB & UV</b>'
+        return '<b>Вимкнено</b>'
 
     @protect_it
     def ts_menu(self, bot, update):
@@ -58,11 +71,11 @@ class Thermostat:
     @protect_it
     def get_data(self, bot, update):
         text = self.__get_data_from_box()
-        formatting_text = f"Термостат: {'On' if int(text[0]) else 'Off'}\n" \
-            f"Стан в даний момент: {('<b>Нагрівання</b>' if text[1] == '1' else '<b>Охолодження</b>') if text[1] != '0' else '<b>Вимкнено</b>'}\n" \
-            f"Температура: {text[2]}\n" \
-            f"Встановлена температура.: {text[3]}\n" \
-            f"Освітленість: {'On' if int(text[6]) else 'Off'}\n"
+        formatting_text = f"Термостат: {'On' if int(text[TS_STATE]) else 'Off'}\n" \
+            f"Стан в даний момент: {('<b>Нагрівання</b>' if text[CURRENT_STATE] == '1' else '<b>Охолодження</b>') if text[CURRENT_STATE] != '0' else '<b>Вимкнено</b>'}\n" \
+            f"Температура: {text[CURRENT_TEMP]}\n" \
+            f"Встановлена температура.: {text[SET_TEMP]}\n" \
+            f"Освітленість: {self.__get_light_mode()}"
 
         bot.send_message(chat_id=update.message.chat_id,
                          text=formatting_text, parse_mode="HTML")
@@ -162,9 +175,7 @@ class Thermostat:
     @protect_it
     def get_light_data(self, bot, update):
         text = self.__get_data_from_box()
-
-        light_state = f"{('<b>УФ</b>' if text[LIGHT_STATE] == '1' else ('<b>RGB</b>' if text[LIGHT_STATE] == '2' else '<b>RGB & UV</b>')) if text[LIGHT_STATE] != '0' else '<b>Вимкнено</b>'} "
-        formatted_text = f"Стан освітленості: {light_state}" \
+        formatted_text = f"Стан освітленості: {self.get_light_data(text)}" \
                          f"\n<b>UV:</b> {text[UV]}\n<b>R:</b> {text[R]}\n" \
                          f"<b>G:</b> {text[G]}\n<b>B:</b> {text[B]}"
 
